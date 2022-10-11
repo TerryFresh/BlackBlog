@@ -1,0 +1,36 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>title</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+
+<div>Поиск по пользователю</div>
+<div>
+    <form method="post" action="filter">
+        <input type="text" name="filter" placeholder="Введите имя пользователя" class="form-control">
+        <button type="submit">Найти</button>
+    </form>
+</div>
+<br>
+<div>
+    <form method="post">
+        <input type="text" name="text" placeholder="Введите текст" class="form-control">
+        <button type="submit">Добавить</button>
+    </form>
+</div>
+
+
+<div class="container mt-5">
+    <div th:each="element : ${comments}" class="alert alert-info mt-2">
+        <p th:text="${element.users}"/>
+        <p th:text="${element.comment}"/>
+        <br><br>
+    </div>
+
+</div>
+
+
+</body>
+</html>
