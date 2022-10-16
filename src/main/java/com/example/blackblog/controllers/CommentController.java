@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+
 
 
 @Controller
@@ -32,7 +32,6 @@ public class CommentController {
 
         return "home-view";
     }
-
 
     @PostMapping("/add")
     public String addComment(@RequestParam String text, @RequestParam String replyId, @RequestParam String userId, Model model) {
@@ -66,14 +65,11 @@ public class CommentController {
 
     @PostMapping("/filter")
     public String filter(@RequestParam String filter, Model model) {
-//        if (!userRepo.existsById(Long.parseLong(filter))) {
-//            return "redirect:/";
-//        }
-        List<Comment> comment;
+
         if (filter != null && !filter.isEmpty()) {
-            comment = commentRepo.findByUserId(Long.parseLong(filter));
-            ArrayList<User> res = new ArrayList<>();
-            model.addAttribute("replies", res);
+            Iterable<Comment> comments = commentRepo.findByUserId(Long.parseLong(filter));
+            model.addAttribute("comments", comments);
+
         } else {
             return "redirect:/";
         }
