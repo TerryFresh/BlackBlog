@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 
@@ -25,25 +24,33 @@ public class CommentController {
     @Autowired
     private UserRepo userRepo;
 
-//    @GetMapping("/")
-//    public String home(Model model) {
-//        Iterable<Comment> comments = commentRepo.findAll();
-//        model.addAttribute("comments", comments);
-//
-//        return "home-view";
-//    }
-
     @GetMapping("/")
     public String home(Model model) {
-        Iterable<User> users = userRepo.findAll();
-        model.addAttribute("users", users);
+        Iterable<Comment> comments = commentRepo.findAll();
+        model.addAttribute("comments", comments);
 
         return "home-view";
     }
 
-    @PostMapping
-    public String addComment(@RequestParam String text, Model model) {
-        Comment comment = new Comment(text);
+
+    @PostMapping("/add")
+    public String addComment(@RequestParam String text, @RequestParam String replyId, @RequestParam String userId, Model model) {
+        if (!userRepo.existsById(Long.parseLong(userId))) {
+            return "redirect:/";
+        }
+        if (!commentRepo.existsById(Long.parseLong(replyId))) {
+            return "redirect:/";
+        }
+
+        User user = userRepo.findById(Long.parseLong(userId)).orElse(null); // добавил .orElse(null); тк findById возвращает Optional<T> который не подходит для дальнейшей передачи
+        ArrayList<User> res = new ArrayList<>();
+        model.addAttribute("users", res);
+
+        Comment reply = commentRepo.findById(Long.parseLong(replyId)).orElse(null);
+        ArrayList<User> res2 = new ArrayList<>();
+        model.addAttribute("replies", res2);
+
+        Comment comment = new Comment(text, user, reply);
         commentRepo.save(comment);
         Iterable<Comment> comments = commentRepo.findAll();
         model.addAttribute("comments", comments);
@@ -51,33 +58,21 @@ public class CommentController {
         return "home-view";
     }
 
-//    filter by comment text (не ищет по юзеру)
+
 //    @PostMapping("/filter")
 //    public String filter(@RequestParam String filter, Model model) {
-//        Iterable<Comment> comments;
+//        Optional<User> users;
 //        if (filter != null && !filter.isEmpty()){
-//            comments = commentRepo.findByText(filter);
-//        } else {
-//            comments = commentRepo.findAll();
+//            users = userRepo.findByUsername(filter);
+//            ArrayList<User> res = new ArrayList<>();
+//            users.ifPresent(res::add);
+//            model.addAttribute("users", res);
 //        }
-//        model.addAttribute("comments", comments);
+//        else {
+//           return "redirect:/";
+//        }
 //
 //        return "home-view";
 //    }
 
-    @PostMapping("/filter")
-    public String filter(@RequestParam String filter, Model model) {
-        Optional<User> users;
-        if (filter != null && !filter.isEmpty()){
-            users = userRepo.findByUsername(filter);
-            ArrayList<User> res = new ArrayList<>();
-            users.ifPresent(res::add);
-            model.addAttribute("users", res);
-        }
-        else {
-           return "redirect:/";
-        }
-
-        return "home-view";
-    }
 }

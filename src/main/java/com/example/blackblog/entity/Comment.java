@@ -1,7 +1,6 @@
 package com.example.blackblog.entity;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Table(name = "comments")
@@ -14,34 +13,18 @@ public class Comment {
     private String text;
 
     @ManyToOne
-    private Comment reply;
-
-    @OneToMany(mappedBy = "user")
-    private List<LikeComment> likedComment;
-
-    @OneToMany(mappedBy = "user")
-    private List<DislikeComment> dislikedComment;
-
-    @OneToMany(mappedBy = "reply")
-    private List<Comment> replyComment;
+    private User user;
 
     @ManyToOne
-    private User user;
+    private Comment reply;
 
     public Comment() {
     }
 
-    public Comment(String text) {
+    public Comment(String text, User user, Comment reply) {
         this.text = text;
-    }
-
-    public Comment(String text, Comment reply, List<LikeComment> likedComment, List<DislikeComment> dislikedComment, List<Comment> replyComment, User user) {
-        this.text = text;
-        this.reply = reply;
-        this.likedComment = likedComment;
-        this.dislikedComment = dislikedComment;
-        this.replyComment = replyComment;
         this.user = user;
+        this.reply = reply;
     }
 
     public Long getId() {
@@ -60,38 +43,6 @@ public class Comment {
         this.text = text;
     }
 
-    public Comment getReply() {
-        return reply;
-    }
-
-    public void setReply(Comment reply) {
-        this.reply = reply;
-    }
-
-    public List<LikeComment> getLikedComment() {
-        return likedComment;
-    }
-
-    public void setLikedComment(List<LikeComment> likedComment) {
-        this.likedComment = likedComment;
-    }
-
-    public List<DislikeComment> getDislikedComment() {
-        return dislikedComment;
-    }
-
-    public void setDislikedComment(List<DislikeComment> dislikedComment) {
-        this.dislikedComment = dislikedComment;
-    }
-
-    public List<Comment> getReplyComment() {
-        return replyComment;
-    }
-
-    public void setReplyComment(List<Comment> replyComment) {
-        this.replyComment = replyComment;
-    }
-
     public User getUser() {
         return user;
     }
@@ -100,11 +51,21 @@ public class Comment {
         this.user = user;
     }
 
+    public Comment getReply() {
+        return reply;
+    }
+
+    public void setReply(Comment reply) {
+        this.reply = reply;
+    }
+
     @Override
     public String toString() {
-        return "{Comment:" +
-                "text=" + text + '\'' +
+        return "Comment{" +
+                "id=" + id +
+                ", text='" + text + '\'' +
+                ", user=" + user +
                 ", reply=" + reply +
-                ", user=" + user + "} ";
+                '}';
     }
 }

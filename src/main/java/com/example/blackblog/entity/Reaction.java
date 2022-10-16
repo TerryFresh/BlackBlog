@@ -1,13 +1,18 @@
 package com.example.blackblog.entity;
 
+import com.example.blackblog.entity.Comment;
+import com.example.blackblog.entity.User;
+
 import javax.persistence.*;
 
 @Entity
-public class LikeComment {
+public class Reaction {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    private String reactionType;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -17,10 +22,11 @@ public class LikeComment {
     @JoinColumn(name = "comment_id")
     private Comment comment;
 
-    public LikeComment() {
+    public Reaction() {
     }
 
-    public LikeComment(User user, Comment comment) {
+    public Reaction(String reactionType, User user, Comment comment) {
+        this.reactionType = reactionType;
         this.user = user;
         this.comment = comment;
     }
@@ -31,6 +37,14 @@ public class LikeComment {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getReactionType() {
+        return reactionType;
+    }
+
+    public void setReactionType(String reactionType) {
+        this.reactionType = reactionType;
     }
 
     public User getUser() {
@@ -49,5 +63,13 @@ public class LikeComment {
         this.comment = comment;
     }
 
-
+    @Override
+    public String toString() {
+        return "Reaction{" +
+                "id=" + id +
+                ", reactionType='" + reactionType + '\'' +
+                ", userId='" + user + '\'' +
+                ", comment=" + comment +
+                '}';
+    }
 }

@@ -10,11 +10,6 @@
             <a href="/" class="d-flex align-items-center text-dark text-decoration-none">
                 <span class="fs-4">Black Blog</span>
             </a>
-            <nav class="d-inline-flex mt-2 mt-md-0 ms-md-auto">
-                <br>
-                <a class="me-3 py-2 text-dark text-decoration-none" href="/aboutme">Sign in</a>
-                <br><br>
-            </nav>
         </div>
     </section>
 </div>
@@ -28,31 +23,32 @@
     </form>
 </div>
 <br>
+<!--<div>-->
+<!--    <form method="post">-->
+<!--        <input type="text" name="text" placeholder="Введите текст" class="form-control">-->
+<!--        <button type="submit">Добавить</button>-->
+<!--    </form>-->
+<!--</div>-->
+
 <div>
-    <form method="post">
+    <form method="post" action="add">
         <input type="text" name="text" placeholder="Введите текст" class="form-control">
+        <input type="text" name="id" placeholder="Введите user id" class="form-control">
+        <input type="text" name="id" placeholder="Введите reply id" class="form-control">
         <button type="submit">Добавить</button>
     </form>
 </div>
 
 
-<!--<div class="container mt-5">-->
-<!--    <div th:each="element : ${comments}" class="alert alert-info mt-2">-->
-<!--        <p th:text="${element.user}"/>-->
-<!--        <p th:text="${element.text}"/>-->
-<!--        <p th:text="${element.reply}"/>-->
-<!--        <br>-->
-<!--    </div>-->
-<!--</div>-->
-
 <div class="container mt-5">
-    <div th:each="element : ${users}" class="alert alert-info mt-2">
-        <p th:text="${element.username}"/>
-        <p th:text="${element.comment}"/>
-<!--        <p th:text="${element.reply}"/>-->
+    <div th:each="element : ${comments}" class="alert alert-info mt-2">
+        <p th:text="${element.text}"/>
+        <p th:text="${element.reply}"/>
+        <p th:text="${element.user}"/>
         <br>
     </div>
 </div>
+
 
 
 </body>
