@@ -6,6 +6,7 @@ import com.example.blackblog.entity.User;
 import javax.persistence.*;
 
 @Entity
+@Table(name = "reactions")
 public class Reaction {
 
     @Id

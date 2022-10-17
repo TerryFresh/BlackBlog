@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface ReactionRepo extends CrudRepository<Reaction, Long> {
     List<Reaction> findByReactionType(String text);
+
+    List<Reaction> findByCommentId(Long userId);
 }

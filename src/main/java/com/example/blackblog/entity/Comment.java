@@ -62,10 +62,8 @@ public class Comment {
     @Override
     public String toString() {
         return "Comment{" +
-                " id= " + id +
-                ", text= '" + text + '\'' +
-                ", user= " + user +
-                ", reply= " + reply +
+                "text='" + text + '\'' +
+                ", user=" + user +
                 '}';
     }
 }
