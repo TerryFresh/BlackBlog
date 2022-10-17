@@ -1,7 +1,6 @@
 package com.example.blackblog.entity;
 
-import com.example.blackblog.entity.Comment;
-import com.example.blackblog.entity.User;
+import com.example.blackblog.enums.ReactionsType;
 
 import javax.persistence.*;
 
@@ -13,7 +12,8 @@ public class Reaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String reactionType;
+    @Enumerated(EnumType.STRING)
+    private ReactionsType reactionType;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -26,7 +26,7 @@ public class Reaction {
     public Reaction() {
     }
 
-    public Reaction(String reactionType, User user, Comment comment) {
+    public Reaction(ReactionsType reactionType, User user, Comment comment) {
         this.reactionType = reactionType;
         this.user = user;
         this.comment = comment;
@@ -38,14 +38,6 @@ public class Reaction {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getReactionType() {
-        return reactionType;
-    }
-
-    public void setReactionType(String reactionType) {
-        this.reactionType = reactionType;
     }
 
     public User getUser() {
@@ -62,6 +54,14 @@ public class Reaction {
 
     public void setComment(Comment comment) {
         this.comment = comment;
+    }
+
+    public ReactionsType getReactionType() {
+        return reactionType;
+    }
+
+    public void setReactionType(ReactionsType reactionType) {
+        this.reactionType = reactionType;
     }
 
     @Override

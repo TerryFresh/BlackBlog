@@ -3,6 +3,7 @@ package com.example.blackblog.controllers;
 import com.example.blackblog.entity.Comment;
 import com.example.blackblog.entity.Reaction;
 import com.example.blackblog.entity.User;
+import com.example.blackblog.enums.ReactionsType;
 import com.example.blackblog.repo.CommentRepo;
 import com.example.blackblog.repo.ReactionRepo;
 import com.example.blackblog.repo.UserRepo;
@@ -103,7 +104,7 @@ public class CommentController {
         ArrayList<User> res2 = new ArrayList<>();
         model.addAttribute("replies", res2);
 
-        Reaction reaction = new Reaction(reactionType, user, comment);
+        Reaction reaction = new Reaction(ReactionsType.valueOf(String.valueOf(reactionType).toUpperCase()), user, comment);
         reactionRepo.save(reaction);
         Iterable<Reaction> reactions = reactionRepo.findAll();
         model.addAttribute("reactions", reactions);
