@@ -7,12 +7,17 @@ import com.example.blackblog.enums.ReactionsType;
 import com.example.blackblog.repo.CommentRepo;
 import com.example.blackblog.repo.ReactionRepo;
 import com.example.blackblog.repo.UserRepo;
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
 
 import java.util.ArrayList;
 
@@ -27,7 +32,10 @@ public class CommentController {
     private UserRepo userRepo;
 
     @Autowired
-    ReactionRepo reactionRepo;
+    private ReactionRepo reactionRepo;
+
+    @Autowired
+    SessionFactory sessionFactory;
 
     @GetMapping("/")
     public String home(Model model) {
@@ -89,7 +97,6 @@ public class CommentController {
         if (!userRepo.existsById(Long.parseLong(userId))) {
             return "redirect:/";
         }
-
         if (commentRepo != null && !commentId.isEmpty()) {
             if (!commentRepo.existsById(Long.parseLong(commentId))) {
                 return "redirect:/";
@@ -97,14 +104,40 @@ public class CommentController {
         }
 
         User user = userRepo.findById(Long.parseLong(userId)).orElse(null);
-        ArrayList<User> res = new ArrayList<>();
-        model.addAttribute("users", res);
-
         Comment comment = commentRepo.findById(Long.parseLong(commentId)).orElse(null);
-        ArrayList<User> res2 = new ArrayList<>();
-        model.addAttribute("replies", res2);
-
         Reaction reaction = new Reaction(ReactionsType.valueOf(String.valueOf(reactionType).toUpperCase()), user, comment);
+
+        if (!reactionRepo.findByUserId(Long.parseLong(userId)).isEmpty()) {
+            if (!reactionRepo.findByCommentId(Long.parseLong(commentId)).isEmpty()) {
+
+                Session session;
+
+                try {
+                    session = sessionFactory.getCurrentSession();
+                } catch (HibernateException e) {
+                    session = sessionFactory.openSession();
+                }
+
+                try {
+                    String hql = "UPDATE Reaction SET reactionType = :reactionType WHERE user= :user AND comment= :comment";
+                    Query query = session.createQuery(hql);
+                    query
+//                            .setParameter("userId", userRepo.findById(Long.parseLong(userId)))
+//                            .setParameter("commentId", commentRepo.findById(Long.parseLong(commentId)))
+                            .setParameter("reactionType", reaction.getReactionType());
+                    session.saveOrUpdate(reaction);
+
+                } catch (Exception e) {
+                    System.out.println("nihuya");
+                }
+                if (session.getTransaction().isActive()) {
+                    session.getTransaction().commit();
+                }
+                session.close();
+            }
+            return "redirect:/";
+        }
+
         reactionRepo.save(reaction);
         Iterable<Reaction> reactions = reactionRepo.findAll();
         model.addAttribute("reactions", reactions);
