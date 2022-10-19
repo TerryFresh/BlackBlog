@@ -3,6 +3,7 @@ package com.example.blackblog.controllers;
 import com.example.blackblog.entity.Comment;
 import com.example.blackblog.entity.Reaction;
 import com.example.blackblog.entity.User;
+import com.example.blackblog.enums.ReactionEnable;
 import com.example.blackblog.repo.CommentRepo;
 import com.example.blackblog.repo.ReactionRepo;
 import com.example.blackblog.repo.UserRepo;
@@ -15,7 +16,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 
+import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.List;
 
 
 @Controller
@@ -35,12 +38,25 @@ public class CommentController {
 
     @GetMapping("/")
     public String home(Model model) {
+
         Iterable<Comment> comments = commentRepo.findAll();
         model.addAttribute("comments", comments);
 
         Iterable<Reaction> reactions = reactionRepo.findAll();
         model.addAttribute("reactions", reactions);
 
+        return "home-view";
+    }
+
+    @PostMapping("/filter")
+    public String filter(@RequestParam String filter, Model model) {
+
+        if (filter != null && !filter.isEmpty()) {
+            Iterable<Comment> comments = commentRepo.findByUserId(Long.parseLong(filter));
+            model.addAttribute("comments", comments);
+        } else {
+            return "redirect:/";
+        }
         return "home-view";
     }
 
@@ -74,13 +90,30 @@ public class CommentController {
         return "home-view";
     }
 
-    @PostMapping("/filter")
-    public String filter(@RequestParam String filter, Model model) {
-        if (filter != null && !filter.isEmpty()) {
-            Iterable<Comment> comments = commentRepo.findByUserId(Long.parseLong(filter));
-            model.addAttribute("comments", comments);
-        } else {
+    @PostMapping("/remove")
+    public String deleteComment(@RequestParam String userId, @RequestParam String commentId, @RequestParam String replyId, Model model){
+        Comment reply = null;
+        if (!userRepo.existsById(Long.parseLong(userId))) {
             return "redirect:/";
+        }
+
+        if (!commentRepo.existsById(Long.parseLong(commentId))) {
+            return "redirect:/";
+        }
+
+        User user = userRepo.findById(Long.parseLong(userId)).orElse(null);
+        Comment comment = commentRepo.findById(Long.parseLong(commentId)).orElse(null);
+
+        if (replyId != null && !replyId.isEmpty()) {
+            reply = commentRepo.findById(Long.parseLong(replyId)).orElse(null);
+            if (user == reply.getUser()){
+                commentRepo.delete(comment);
+                return "redirect:/";
+            }
+        }
+
+        if (!commentRepo.findByReplyAndIdAndUser(reply, Long.parseLong(commentId), user).isEmpty()){
+            commentRepo.delete(comment);
         }
         return "home-view";
     }

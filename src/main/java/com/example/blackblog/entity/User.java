@@ -1,6 +1,7 @@
 package com.example.blackblog.entity;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -12,6 +13,16 @@ public class User {
     private Long id;
 
     private String username;
+
+    @OneToMany(cascade = CascadeType.ALL,
+            mappedBy = "user",
+            fetch = FetchType.LAZY)
+    private List<Comment> comment;
+
+    @OneToMany(cascade = CascadeType.ALL,
+            mappedBy = "user",
+            fetch = FetchType.LAZY)
+    private List<Reaction> reactions;
 
     public User() {
     }
@@ -34,6 +45,22 @@ public class User {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public List<Comment> getComment() {
+        return comment;
+    }
+
+    public void setComment(List<Comment> comment) {
+        this.comment = comment;
+    }
+
+    public List<Reaction> getReactions() {
+        return reactions;
+    }
+
+    public void setReactions(List<Reaction> reactions) {
+        this.reactions = reactions;
     }
 
     @Override

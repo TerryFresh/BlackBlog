@@ -38,6 +38,17 @@
     </form>
 </div>
 
+<div>Удалить коммент</div>
+<div>
+    <form method="post" action="remove">
+        <input type="text" name="commentId" placeholder="Введите comment id" class="form-control">
+        <input type="text" name="userId" placeholder="Введите user id" class="form-control">
+        <input type="text" name="replyId" placeholder="Введите reply id" class="form-control">
+        <button type="submit">Удалить</button>
+        <br><br>
+    </form>
+</div>
+
 <div>Добавить реакцию</div>
 <div>
     <form method="post" action="reactions">
@@ -49,14 +60,14 @@
     </form>
 </div>
 
-<!--<div class="container mt-5">-->
-<!--    <div th:each="element : ${comments}" class="alert alert-info mt-2">-->
-<!--        <p th:text="${element.text}"/>-->
-<!--        <p th:text="${element.reply}"/>-->
-<!--        <p th:text="${element.user}"/>-->
-<!--        <br>-->
-<!--    </div>-->
-<!--</div>-->
+<div class="container mt-5">
+    <div th:each="element : ${comments}" class="alert alert-info mt-2">
+        <p th:text="${element.text}"/>
+        <p th:text="${element.reply}"/>
+        <p th:text="${element.user}"/>
+        <br>
+    </div>
+</div>
 
 <div class="container mt-5">
     <div th:each="element : ${reactions}" class="alert alert-info mt-2">

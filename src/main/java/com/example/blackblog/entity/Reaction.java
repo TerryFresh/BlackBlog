@@ -77,13 +77,6 @@ public class Reaction {
         this.isEnable = isEnable;
     }
 
-    @Override
-    public String toString() {
-        return "Reaction{" +
-                "id=" + id +
-                ", reactionType='" + reactionType + '\'' +
-                ", userId='" + user + '\'' +
-                ", comment=" + comment +
-                '}';
-    }
+
+
 }

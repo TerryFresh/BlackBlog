@@ -1,6 +1,10 @@
 package com.example.blackblog.entity;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "comments")
@@ -13,10 +17,21 @@ public class Comment {
     private String text;
 
     @ManyToOne
+    @JoinColumn(name="user_id")
     private User user;
 
     @ManyToOne
+    @JoinColumn(name="reply_id")
     private Comment reply;
+
+    @OneToMany(cascade = CascadeType.ALL,
+            mappedBy = "reply",
+            fetch = FetchType.LAZY)
+    private List<Comment> comments;
+    @OneToMany(cascade = CascadeType.ALL,
+            mappedBy = "comment",
+            fetch = FetchType.LAZY)
+    private List<Reaction> reactions;
 
     public Comment() {
     }
@@ -59,11 +74,11 @@ public class Comment {
         this.reply = reply;
     }
 
-    @Override
-    public String toString() {
-        return "Comment{" +
-                "text='" + text + '\'' +
-                ", user=" + user +
-                '}';
+    public List<Reaction> getReactions() {
+        return reactions;
+    }
+
+    public void setReactions(List<Reaction> reactions) {
+        this.reactions = reactions;
     }
 }

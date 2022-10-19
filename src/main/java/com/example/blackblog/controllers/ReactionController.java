@@ -8,7 +8,6 @@ import com.example.blackblog.enums.ReactionsType;
 import com.example.blackblog.repo.CommentRepo;
 import com.example.blackblog.repo.ReactionRepo;
 import com.example.blackblog.repo.UserRepo;
-import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
