@@ -30,8 +30,9 @@ public class Reaction {
     public Reaction() {
     }
 
-    public Reaction(ReactionsType reactionType, User user, Comment comment) {
+    public Reaction(ReactionsType reactionType, ReactionEnable isEnable, User user, Comment comment) {
         this.reactionType = reactionType;
+        this.isEnable = isEnable;
         this.user = user;
         this.comment = comment;
     }

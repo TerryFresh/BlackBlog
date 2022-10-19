@@ -3,6 +3,7 @@ package com.example.blackblog.controllers;
 import com.example.blackblog.entity.Comment;
 import com.example.blackblog.entity.Reaction;
 import com.example.blackblog.entity.User;
+import com.example.blackblog.enums.ReactionEnable;
 import com.example.blackblog.enums.ReactionsType;
 import com.example.blackblog.repo.CommentRepo;
 import com.example.blackblog.repo.ReactionRepo;
@@ -10,14 +11,17 @@ import com.example.blackblog.repo.UserRepo;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
+@Transactional
 public class ReactionController {
 
     @Autowired
@@ -45,40 +49,33 @@ public class ReactionController {
 
         User user = userRepo.findById(Long.parseLong(userId)).orElse(null);
         Comment comment = commentRepo.findById(Long.parseLong(commentId)).orElse(null);
-        Reaction reaction = new Reaction(ReactionsType.valueOf(String.valueOf(reactionType).toUpperCase()), user, comment);
 
-        if (!reactionRepo.findByUserId(Long.parseLong(userId)).isEmpty()) {
-            if (!reactionRepo.findByCommentId(Long.parseLong(commentId)).isEmpty()) {
-//                if (!reactionRepo.)
+        if (!reactionRepo.findByUserAndCommentAndIsEnable(user, comment, ReactionEnable.valueOf("ENABLE")).isEmpty()) {
+            Session session = sessionFactory.getSessionFactory().openSession();
+            Transaction tx = session.beginTransaction();
 
-                Session session;
-
-                try {
-                    session = sessionFactory.getCurrentSession();
-                } catch (HibernateException e) {
-                    session = sessionFactory.openSession();
-                }
-
-                try {
-                    String hql = "UPDATE Reaction SET reactionType = :reactionType WHERE user= :user AND comment= :comment";
-                    Query query = session.createQuery(hql);
-                    query
-//                            .setParameter("userId", userRepo.findById(Long.parseLong(userId)))
-//                            .setParameter("commentId", commentRepo.findById(Long.parseLong(commentId)))
-                            .setParameter("reactionType", reaction.getReactionType());
-                    session.saveOrUpdate(reaction);
-
-                } catch (Exception e) {
-                    System.out.println("nihuya");
-                }
-                if (session.getTransaction().isActive()) {
-                    session.getTransaction().commit();
-                }
+            try {
+                Query query = session.createQuery("UPDATE Reaction SET isEnable = :isEnable WHERE user = :userId AND comment = :commentId");
+                query
+                        .setParameter("isEnable", ReactionEnable.DISABLE)
+                        .setParameter("userId", user)
+                        .setParameter("commentId", comment);
+                int result = query.executeUpdate();
+                tx.commit();
                 session.close();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            return "redirect:/";
-        }
+            if (session.getTransaction().isActive()) {
+                session.getTransaction().commit();
+            }
+            session.close();
 
+            if (!reactionRepo.findByReactionType(ReactionsType.valueOf(reactionType.toUpperCase())).isEmpty()) {
+                return "redirect:/";
+            }
+        }
+        Reaction reaction = new Reaction(ReactionsType.valueOf(String.valueOf(reactionType).toUpperCase()), ReactionEnable.valueOf("ENABLE"), user, comment);
         reactionRepo.save(reaction);
         Iterable<Reaction> reactions = reactionRepo.findAll();
         model.addAttribute("reactions", reactions);
