@@ -14,4 +14,6 @@ public interface ReactionRepo extends CrudRepository<Reaction, Long> {
 
     List<Reaction> findByUserId(Long userId);
 
+//    List<Reaction> findBy(ReactionsType text);
+
 }

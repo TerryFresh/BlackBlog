@@ -1,5 +1,6 @@
 package com.example.blackblog.entity;
 
+import com.example.blackblog.enums.ReactionEnable;
 import com.example.blackblog.enums.ReactionsType;
 
 import javax.persistence.*;
@@ -14,6 +15,9 @@ public class Reaction {
 
     @Enumerated(EnumType.STRING)
     private ReactionsType reactionType;
+
+    @Enumerated(EnumType.STRING)
+    private ReactionEnable isEnable;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -62,6 +66,14 @@ public class Reaction {
 
     public void setReactionType(ReactionsType reactionType) {
         this.reactionType = reactionType;
+    }
+
+    public ReactionEnable getIsEnable() {
+        return isEnable;
+    }
+
+    public void setIsEnable(ReactionEnable isEnable) {
+        this.isEnable = isEnable;
     }
 
     @Override
