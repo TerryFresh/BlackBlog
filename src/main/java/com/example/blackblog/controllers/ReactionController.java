@@ -70,7 +70,7 @@ public class ReactionController {
             }
             session.close();
 
-            if (!reactionRepo.findByReactionType(ReactionsType.valueOf(reactionType.toUpperCase())).isEmpty()) {
+            if (!reactionRepo.findByUserAndCommentAndReactionType(user, comment, ReactionsType.valueOf(reactionType.toUpperCase())).isEmpty()) {
                 return "redirect:/";
             }
         }

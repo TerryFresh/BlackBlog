@@ -1,3 +1,10 @@
+// 0. Переименовать метод и не забыть поправить коллекцию в postman
+// 1. ReplyId не обязательный
+// 2. Возвращай JSON
+// 3. Привести в соответствие с REST подходом
+// 4. Передавать параметры в теле запроса
+// 5. Можно ответить на несуществующий коммент??????? Обработка ошибок!!!!
+
 package com.example.blackblog.controllers;
 
 import com.example.blackblog.entity.Comment;
@@ -69,7 +76,7 @@ public class CommentController {
 
         if (replyId != null && !replyId.isEmpty()) {
             if (!commentRepo.existsById(Long.parseLong(replyId))) {
-                return "redirect:/";
+                return "Nihuya";
             }
         }
         User user = userRepo.findById(Long.parseLong(userId)).orElse(null); // добавил .orElse(null); тк findById возвращает Optional<T> который не подходит для дальнейшей передачи

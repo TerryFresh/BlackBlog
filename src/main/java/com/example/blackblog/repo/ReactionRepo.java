@@ -21,5 +21,6 @@ public interface ReactionRepo extends CrudRepository<Reaction, Long> {
     List<Reaction> findByIsEnable(ReactionEnable isEnable);
 
     List<Reaction> findByUserAndCommentAndIsEnable(User user, Comment comment, ReactionEnable isEnable);
+    List<Reaction> findByUserAndCommentAndReactionType(User user, Comment comment, ReactionsType reactionsType);
 
 }
